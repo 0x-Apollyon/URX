@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URX: URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            accent-color: #6200ea; /* Change the color of the checkbox */
+        }
+
+        .checkbox-group label {
+            margin-left: 5px;
+            color: #e0e0e0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #e0e0e0;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            width: calc(100% - 12px);
+            padding: 8px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+        }
+
+        #emailField, #allowedEmailsField, #expiryDateField {
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .button-group button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #6200ea;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button-group button[type="reset"] {
+            background-color: #444;
+        }
+
+        .button-group button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URX: URL Shortener</h1>
+        <form id="myForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="inputText">Enter URL to shorten:</label>
+                <input type="text" id="inputText" name="inputText" required>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="updatesCheckbox" onclick="toggleEmailField()">
+                <label for="updatesCheckbox">I want updates</label>
+            </div>
+
+            <div id="emailField" class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="walledGardenCheckbox" onclick="toggleAllowedEmailsField()">
+                <label for="walledGardenCheckbox">Walled Garden</label>
+            </div>
+
+            <div id="allowedEmailsField" class="form-group">
+                <label for="allowedEmails">Allowed Email Addresses:</label>
+                <input type="text" id="allowedEmails" name="allowedEmails">
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="timeBoundCheckbox" onclick="toggleExpiryDateField()">
+                <label for="timeBoundCheckbox">Time Bound</label>
+            </div>
+
+            <div id="expiryDateField" class="form-group">
+                <label for="expiryDate">Expiry Date:</label>
+                <input type="text" id="expiryDate" name="expiryDate" placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function toggleEmailField() {
+            const emailField = document.getElementById('emailField');
+            emailField.style.display = document.getElementById('updatesCheckbox').checked ? 'block' : 'none';
+        }
+
+        function toggleAllowedEmailsField() {
+            const allowedEmailsField = document.getElementById('allowedEmailsField');
+            allowedEmailsField.style.display = document.getElementById('walledGardenCheckbox').checked ? 'block' : 'none';
+        }
+
+        function toggleExpiryDateField() {
+            const expiryDateField = document.getElementById('expiryDateField');
+            expiryDateField.style.display = document.getElementById('timeBoundCheckbox').checked ? 'block' : 'none';
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            const urlToShorten = document.getElementById('inputText').value;
+            const email = document.getElementById('updatesCheckbox').checked ? document.getElementById('email').value : null;
+            const allowedEmails = document.getElementById('walledGardenCheckbox').checked ? document.getElementById('allowedEmails').value : null;
+            const expiryDate = document.getElementById('timeBoundCheckbox').checked ? document.getElementById('expiryDate').value : null;
+
+            // Validate expiry date format (dd/mm/yyyy)
+            const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
+            if (expiryDate && !datePattern.test(expiryDate)) {
+                alert('Please enter the expiry date in the format dd/mm/yyyy.');
+                return;
+            }
+
+            const payload = {
+                urlToShorten: urlToShorten,
+                email: email,
+                allowedEmails: allowedEmails,
+                expiryDate: expiryDate
+            };
+
+            fetch('/make_short_url', {
+                method: 'POST', // Send a POST request
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload) // Send the payload as a JSON string
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.shortened_url) {
+                    alert(`Shortened URL: ${document.domain}${data.shortened_url}`);
+                } else {
+                    alert('Error: Could not retrieve shortened URL.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: Could not process request.');
+            });
+        }
+    </script>
+</body>
+</html>

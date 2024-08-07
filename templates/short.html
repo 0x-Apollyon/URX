@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URX: URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: center;
+            color: #e0e0e0;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .countdown {
+            font-size: 24px;
+            text-align: center;
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URX: URL Shortener</h1>
+        <p>Shortened URL redirects to <a href="{{ og_url }}" style="color: #6200ea;">{{ og_url }}</a></p>
+        <p class="countdown">Redirecting in <span id="timer">5</span> seconds</p>
+    </div>
+
+    <script>
+        const redirectUrl = '{{ og_url }}';
+
+        function isSafeUrl(url) {
+            return !/^javascript:/i.test(url);
+        }
+
+        let countdown = 5;
+        const timerElement = document.getElementById('timer');
+
+        const interval = setInterval(() => {
+            countdown--;
+            timerElement.textContent = countdown;
+
+            if (countdown === 0) {
+                clearInterval(interval);
+                if (isSafeUrl(redirectUrl)) {
+                    window.location.href = redirectUrl;
+                } else {
+                    alert('Unsafe URL detected. Redirect cancelled.');
+                }
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+    "NOTE":"<-----YOU ONLY NED TO FILL IN THE FIELDS OF THE EMAIL SENDER YOU ARE USING----->",
+    "NOTE_TWO":"<-----YOU ONLY NED TO FILL IN THE FIELDS OF THE EMAIL SENDER YOU ARE USING----->",
+
+    "email_method":"",  
+    "subject_walled":"Walled Garden Entry",
+    "message_walled":"If you tried to access the short link `shortened`, here is its orignal url `og_url`",
+    "subject_notif": "Click on shortened link",
+    "message_notif":"Someone clicked on your link `shortened` which redirects to `og_url`",
+
+    "smtp_hostname":"",
+    "smtp_port":123456789,
+    "smtp_username":"",
+    "sender_email":"",
+    "sender_pass":"",
+    
+    "sender_name":"URX Shortener",
+    "api_key":"",
+    "email_domain":""
+}
