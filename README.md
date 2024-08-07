@@ -14,6 +14,6 @@ URX uses the following tech stack
 - URLs can be made to send notification to the owner of the URL when it is opened
 
 ### Known drawbacks and fixes
-Drawback: Not very scalable
+Drawback: Not very scalable <br>
 Fix: Use a key value database such as MongoDB or Redis to store the data
 
