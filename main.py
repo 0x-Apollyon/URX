@@ -185,4 +185,5 @@ def view_auth_url():
         return {"message":"If the email exists and has been allowed by the link creator, then the orignal URL has been sent."}
 
 if __name__ == "__main__":
-    app.run()         
+    app.run(host='0.0.0.0', port=1000) 
+          
